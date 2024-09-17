@@ -35,7 +35,7 @@ export default defineConfig({
           }
         ]
       },
-      includeAssets: ['favicon.ico']
+      includeAssets: ['favicon.ico', 'nora.png', 'sebastian.png', 'heart.png']
     })
   ],
   resolve: {

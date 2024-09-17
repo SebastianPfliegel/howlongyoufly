@@ -142,10 +142,10 @@ const opacity = (n: number): string | Array<string> => {
       class="flex flex-col gap-2 font-display text-3xl text-white sm:flex-row sm:gap-6 md:text-4xl"
     >
       <span v-if="howLongYouFly.days > 0">{{ howLongYouFly.days }} days</span>
-      <span v-if="howLongYouFly.hours > 0 && howLongYouFly.days > 0"
+      <span v-if="howLongYouFly.hours > 0 || howLongYouFly.days > 0"
         >{{ howLongYouFly.hours.toString().padStart(2, '0') }} hours</span
       >
-      <span v-if="howLongYouFly.minutes > 0 && (howLongYouFly.hours > 0 || howLongYouFly.days > 0)"
+      <span v-if="howLongYouFly.minutes > 0 || howLongYouFly.hours > 0 || howLongYouFly.days > 0"
         >{{ howLongYouFly.minutes.toString().padStart(2, '0') }} minutes</span
       >
       <span>{{ howLongYouFly.seconds.toString().padStart(2, '0') }} seconds</span>
