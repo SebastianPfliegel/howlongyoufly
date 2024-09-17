@@ -5,8 +5,8 @@ import { Fireworks } from '@fireworks-js/vue'
 const progressbarMax = 10
 let interval: number | undefined = undefined
 
-const departure = ref(new Date(2024, 7, 1, 18, 0, 0).getTime())
-const arrival = ref(new Date(2024, 9, 1, 18, 0, 0).getTime())
+const departure = ref(new Date(Date.UTC(2024, 7, 1, 16, 0, 0, 0)).getTime())
+const arrival = ref(new Date(Date.UTC(2024, 9, 1, 16, 0, 0)).getTime())
 const now = ref(new Date().getTime())
 const canIHoldYouInMyArms = ref(false)
 
@@ -124,7 +124,7 @@ const opacity = (n: number): string | Array<string> => {
     v-else
     class="sm:gap8 flex h-svh flex-col items-center justify-center gap-6 overflow-hidden bg-zinc-900 p-8 selection:bg-white selection:text-zinc-900 sm:p-12 md:gap-10"
   >
-    <h1 class="font-display text-center text-5xl text-white sm:text-7xl md:text-8xl">
+    <h1 class="text-center font-display text-5xl text-white sm:text-7xl md:text-8xl">
       How long you fly?!
     </h1>
     <div class="flex flex-col gap-1 sm:gap-1.5 md:gap-2">
@@ -139,13 +139,13 @@ const opacity = (n: number): string | Array<string> => {
       </div>
     </div>
     <div
-      class="font-display flex flex-col gap-2 text-3xl text-white sm:flex-row sm:gap-6 md:text-4xl"
+      class="flex flex-col gap-2 font-display text-3xl text-white sm:flex-row sm:gap-6 md:text-4xl"
     >
       <span v-if="howLongYouFly.days > 0">{{ howLongYouFly.days }} days</span>
-      <span v-if="howLongYouFly.hours > 0"
+      <span v-if="howLongYouFly.hours > 0 && howLongYouFly.days > 0"
         >{{ howLongYouFly.hours.toString().padStart(2, '0') }} hours</span
       >
-      <span v-if="howLongYouFly.minutes > 0"
+      <span v-if="howLongYouFly.minutes > 0 && (howLongYouFly.hours > 0 || howLongYouFly.days > 0)"
         >{{ howLongYouFly.minutes.toString().padStart(2, '0') }} minutes</span
       >
       <span>{{ howLongYouFly.seconds.toString().padStart(2, '0') }} seconds</span>
