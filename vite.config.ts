@@ -35,7 +35,10 @@ export default defineConfig({
           }
         ]
       },
-      includeAssets: ['favicon.ico', 'nora.png', 'sebastian.png', 'heart.png']
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,mp3,woff,woff2}'],
+        maximumFileSizeToCacheInBytes: 6000000
+      }
     })
   ],
   resolve: {
