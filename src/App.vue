@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { Fireworks } from '@fireworks-js/vue'
+import LoudSpeaker from '@/components/icons/LoudSpeaker.vue'
+import MutedSpeaker from '@/components/icons/MutedSpeaker.vue'
 
 const progressbarMax = 10
 let interval: number | undefined = undefined
@@ -9,6 +11,9 @@ const departure = ref(new Date(Date.UTC(2024, 7, 1, 16, 0, 0, 0)).getTime())
 const arrival = ref(new Date(Date.UTC(2024, 9, 1, 16, 0, 0)).getTime())
 const now = ref(new Date().getTime())
 const canIHoldYouInMyArms = ref(false)
+const isPlaying = ref(false)
+const bgmusic = ref<HTMLAudioElement>()
+const fireworksSfx = ref<HTMLAudioElement>()
 
 const rest = computed(() => {
   return arrival.value - now.value
@@ -53,6 +58,15 @@ watch(canIHoldYouInMyArms, () => {
   clearInterval(interval)
 })
 
+watch(fireworksSfx, () => {
+  if (fireworksSfx.value) {
+    if (isPlaying.value) {
+      fireworksSfx.value.volume = 0.5
+      fireworksSfx.value.play()
+    }
+  }
+})
+
 onMounted(() => {
   interval = setInterval(countDown, 1000)
 })
@@ -93,16 +107,35 @@ const opacity = (n: number): string | Array<string> => {
 
   return 'opacity-5'
 }
+
+const togglePlaying = () => {
+  if (bgmusic.value) {
+    isPlaying.value = !isPlaying.value
+    if (bgmusic.value.paused && isPlaying.value) {
+      bgmusic.value.volume = 0.2
+      bgmusic.value.play()
+      if (fireworksSfx.value) {
+        fireworksSfx.value.volume = 0.5
+        fireworksSfx.value.play()
+      }
+    } else {
+      bgmusic.value.muted = !isPlaying.value
+      if (fireworksSfx.value) {
+        fireworksSfx.value.muted = !isPlaying.value
+      }
+    }
+  }
+}
 </script>
 
 <template>
   <main
     v-if="canIHoldYouInMyArms"
-    class="flex h-svh flex-col items-center justify-center gap-6 overflow-hidden bg-zinc-900 p-8 sm:gap-8 sm:p-12 md:gap-10"
+    class="flex min-h-svh flex-col items-center justify-center gap-6 bg-zinc-900 p-8 sm:gap-8 sm:p-12 md:gap-10"
   >
     <Fireworks :autostart="true" class="fixed left-0 top-0 h-full w-full" />
     <h1
-      class="font-sc text-5xl text-white selection:bg-white selection:text-zinc-900 sm:text-7xl md:text-8xl"
+      class="text-center font-sc text-5xl text-white selection:bg-white selection:text-zinc-900 sm:text-7xl md:text-8xl"
     >
       欢迎回来
     </h1>
@@ -119,10 +152,13 @@ const opacity = (n: number): string | Array<string> => {
         class="w-20 object-scale-down sm:w-40 sm:object-cover md:w-52"
       />
     </div>
+    <audio loop ref="fireworksSfx">
+      <source src="/firework.mp3" type="audio/mpeg" />
+    </audio>
   </main>
   <main
     v-else
-    class="sm:gap8 flex h-svh flex-col items-center justify-center gap-6 overflow-hidden bg-zinc-900 p-8 selection:bg-white selection:text-zinc-900 sm:p-12 md:gap-10"
+    class="sm:gap8 flex min-h-svh flex-col items-center justify-center gap-6 bg-zinc-900 p-8 selection:bg-white selection:text-zinc-900 sm:p-12 md:gap-10"
   >
     <h1 class="text-center font-display text-5xl text-white sm:text-7xl md:text-8xl">
       How long you fly?!
@@ -154,4 +190,14 @@ const opacity = (n: number): string | Array<string> => {
       /></span>
     </div>
   </main>
+  <button
+    @click="togglePlaying()"
+    class="fixed right-3 top-3 flex items-center justify-center rounded-full p-3 text-zinc-700 duration-300 ease-in-out hover:bg-white/5 hover:text-white focus:bg-white/5 focus:text-white focus:outline-none"
+  >
+    <MutedSpeaker v-if="!isPlaying" class="size-12" />
+    <LoudSpeaker v-else class="size-12" />
+  </button>
+  <audio loop ref="bgmusic">
+    <source src="/bg_music.mp3" type="audio/mpeg" />
+  </audio>
 </template>
